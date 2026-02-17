@@ -39,32 +39,34 @@ The following algorithms are implemented:
 ---
 
 ## Project Architecture
-├── classical_ann_cpp
-│   ├── include
-│   │   ├── brute_force.hpp
-│   │   ├── evaluator.hpp
-│   │   ├── file_parser.hpp
-│   │   ├── hypercube.hpp
-│   │   ├── ivfflat.hpp
-│   │   ├── ivfpq.hpp
-│   │   ├── lsh.hpp
-│   │   ├── output_writer.hpp
-│   │   └── utils.hpp
-│   ├── src
-│   │   ├── brute_force.cpp
-│   │   ├── evaluator.cpp
-│   │   ├── file_parser.cpp
-│   │   ├── hypercube.cpp
-│   │   ├── ivfflat.cpp
-│   │   ├── ivfpq.cpp
-│   │   ├── lsh.cpp
-│   │   ├── main.cpp
-│   │   ├── output_writer.cpp
-│   │   └── utils.cpp
-│   ├── Makefile
-│   ├── README.md
-│   └── search
-
+```text
+Project Architecture
+classical_ann_cpp/
+├── include/
+│ ├── brute_force.hpp
+│ ├── evaluator.hpp
+│ ├── file_parser.hpp
+│ ├── hypercube.hpp
+│ ├── ivfflat.hpp
+│ ├── ivfpq.hpp
+│ ├── lsh.hpp
+│ ├── output_writer.hpp
+│ └── utils.hpp
+├── src/
+│ ├── brute_force.cpp
+│ ├── evaluator.cpp
+│ ├── file_parser.cpp
+│ ├── hypercube.cpp
+│ ├── ivfflat.cpp
+│ ├── ivfpq.cpp
+│ ├── lsh.cpp
+│ ├── main.cpp
+│ ├── output_writer.cpp
+│ └── utils.cpp
+├── Makefile
+├── README.md
+└── search
+```
 
 ---
 
@@ -247,12 +249,12 @@ Tradeoff: Very fast for large datasets, small accuracy loss
 make clean
 ```
 
-###Compile
+### Compile
 ```bash
 make
 ```
 
-###Full rebuild
+### Full rebuild
 ```bash
 make clean && make
 ```
@@ -263,7 +265,7 @@ make clean && make
 
 ---
 
-##Program Usage Instructions
+## Program Usage Instructions
 
 ### Basic Syntax
 
