@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# C++
+*.o
+*.d
+build/
+
+# Data files
+*.dat
+*.txt
+*.tsv
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
