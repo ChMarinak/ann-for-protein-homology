@@ -4,7 +4,7 @@
 
 using namespace std;
 
-struct Config;  // forward declaration
+struct Config;
 
 struct EvalMetrics {
     vector<double> AFs;

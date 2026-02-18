@@ -70,6 +70,174 @@ classical_ann_cpp/
 
 ---
 
+## Compilation
+
+### Clean
+```bash
+make clean
+```
+
+### Compile
+```bash
+make
+```
+
+### Full rebuild
+```bash
+make clean && make
+```
+
+### Output
+- `build/`: Folder with object files (.o) and dependency files (.d)
+- `search`: Final executable
+
+---
+
+## Program Usage Instructions
+
+### Basic Syntax
+
+```bash
+./search -d <dataset> -q <queries> -o <output> -t <type> [algorithm flags] [parameters]
+```
+
+### Parameters
+
+#### Required Parameters
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `-d <input file>` | string | Path to dataset (base vectors) |
+| `-q <query file>` | string | Path to query dataset |
+| `-o <output file>` | string | Path for output results |
+| `-t <flag>` | string | Data type: `mnist` or `sift` |
+
+#### Optional Evaluation Parameter
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `-e <ground_truth_file>` | string | Path to precomputed ground truth file for evaluation |
+
+#### Common Parameters for All Algorithms
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `-N <int>` | integer | Number of nearest neighbors to find |
+| `-R <float>` | float | Radius for range search |
+| `-r <true\|false>` | boolean | Enable range search |
+| `-s <int>` | integer | Random seed for reproducibility |
+
+#### LSH Parameters
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `-k <int>` | integer | Number of hash functions per table |
+| `-L <int>` | integer | Number of independent hash tables |
+| `-w <float>` | float | Bucket width for hashing |
+| `-lsh` | - | Algorithm flag |
+
+#### Hypercube Parameters
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `-P <int>` | integer | Number of random projections (d) |
+| `-w <float>` | float | Window size for projections |
+| `-M <int>` | integer | Max candidates in probing |
+| `-p <int>` | integer | Number of hypercube probes |
+| `-hypercube` | - | Algorithm flag |
+
+#### IVFFlat Parameters
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `-c <int>` | integer | Number of K-means clusters |
+| `-n <int>` | integer | Number of probes (inverted lists) |
+| `-ivfflat` | - | Algorithm flag for IVFFlat |
+
+#### IVFPQ Parameters
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `-c <int>` | integer | Number of K-means clusters |
+| `-n <int>` | integer | Number of probes (inverted lists) |
+| `-M <int>` | integer | Number of product quantizers |
+| `-b <int>` | integer | Bits per quantizer |
+| `-ivfpq` | - | Algorithm flag for IVFPQ |
+
+---
+
+### Example Commands
+
+#### LSH (MNIST)
+```bash
+./search -d train.idx3-ubyte -q test.idx3-ubyte \
+         -k 4 -L 5 -w 4.0 \
+         -o lsh_output.txt -N 10 -t mnist -lsh
+```
+
+#### Hypercube (MNIST) with Ground Truth
+```bash
+./search -d train.idx3-ubyte -q test.idx3-ubyte \
+         -e ground_truth.txt \
+         -P 14 -M 10 -p 2 \
+         -o hc_output.txt -N 10 -t mnist -hypercube
+```
+
+#### IVFPQ (SIFT)
+```bash
+./search -d data/mnist/train-images.idx3-ubyte -q data/mnist/test-images.idx3-ubyte \
+         -c 100 -n 3 -o results/ivfflat_output.txt -N 10 -R 2000.0 \
+         -t mnist -r false -ivfpq
+```
+
+#### IVFFlat (BIO)
+```bash
+./search -d bio_base.bin -q bio_query.bin \
+         -c 100 -n 5 -o bio_output.txt \
+         -N 10 -t bio -ivfflat
+```
+
+#### Self-Search Mode (Neural-LSH Graph)
+```bash
+./search -d sift_base.fvecs -o knn_graph.txt \
+         -N 10 -t sift 
+```
+
+## Output Format
+
+The program produces an output file with the following structure:
+
+```
+algorithm_name
+Query: 0
+Nearest neighbor-1: <index>
+distanceApproximate: <distance>
+distanceTrue: <ground_truth_distance>
+Average AF: <value>
+Recall@N: <value>
+QPS: <queries_per_second>
+tApproximateAverage: <time>
+tTrueAverage: <ground_truth_time>
+
+...
+
+Overall Average AF: <value>
+Overall Recall@N: <value>
+Overall QPS: <value>
+Overall tApproximateAverage: <value>
+Overall tTrueAverage: <value>
+```
+
+### Evaluation Metrics
+
+- **AF (Approximation Factor):** Ratio of approximate distance to true distance
+- **Recall@N:** Percentage (%) of the N nearest neighbors found correctly
+- **QPS:** Queries per second (throughput)
+- **tApproximate:** Algorithm execution time (average)
+- **tTrue:** Brute force execution time for ground truth
+
+---
+
 ## Module Responsibilities
 
 ### 1. main.cpp
@@ -239,174 +407,6 @@ Tradeoff: Strong balance between speed and recall
 - Fast approximate distance lookup
 
 Tradeoff: Very fast for large datasets, small accuracy loss
-
----
-
-## Compilation
-
-### Clean
-```bash
-make clean
-```
-
-### Compile
-```bash
-make
-```
-
-### Full rebuild
-```bash
-make clean && make
-```
-
-### Output
-- `build/`: Folder with object files (.o) and dependency files (.d)
-- `search`: Final executable
-
----
-
-## Program Usage Instructions
-
-### Basic Syntax
-
-```bash
-./search -d <dataset> -q <queries> -o <output> -t <type> [algorithm flags] [parameters]
-```
-
-### Parameters
-
-#### Required Parameters
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `-d <input file>` | string | Path to dataset (base vectors) |
-| `-q <query file>` | string | Path to query dataset |
-| `-o <output file>` | string | Path for output results |
-| `-t <flag>` | string | Data type: `mnist` or `sift` |
-
-#### Optional Evaluation Parameter
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `-e <ground_truth_file>` | string | Path to precomputed ground truth file for evaluation |
-
-#### Common Parameters for All Algorithms
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `-N <int>` | integer | Number of nearest neighbors to find |
-| `-R <float>` | float | Radius for range search |
-| `-r <true\|false>` | boolean | Enable range search |
-| `-s <int>` | integer | Random seed for reproducibility |
-
-#### LSH Parameters
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `-k <int>` | integer | Number of hash functions per table |
-| `-L <int>` | integer | Number of independent hash tables |
-| `-w <float>` | float | Bucket width for hashing |
-| `-lsh` | - | Algorithm flag |
-
-#### Hypercube Parameters
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `-P <int>` | integer | Number of random projections (d) |
-| `-w <float>` | float | Window size for projections |
-| `-M <int>` | integer | Max candidates in probing |
-| `-p <int>` | integer | Number of hypercube probes |
-| `-hypercube` | - | Algorithm flag |
-
-#### IVFFlat Parameters
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `-c <int>` | integer | Number of K-means clusters |
-| `-n <int>` | integer | Number of probes (inverted lists) |
-| `-ivfflat` | - | Algorithm flag for IVFFlat |
-
-#### IVFPQ Parameters
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `-c <int>` | integer | Number of K-means clusters |
-| `-n <int>` | integer | Number of probes (inverted lists) |
-| `-M <int>` | integer | Number of product quantizers |
-| `-b <int>` | integer | Bits per quantizer |
-| `-ivfpq` | - | Algorithm flag for IVFPQ |
-
----
-
-### Example Commands
-
-#### LSH (MNIST)
-```bash
-./search -d train.idx3-ubyte -q test.idx3-ubyte \
-         -k 4 -L 5 -w 4.0 \
-         -o lsh_output.txt -N 10 -t mnist -lsh
-```
-
-#### Hypercube (MNIST) with Ground Truth
-```bash
-./search -d train.idx3-ubyte -q test.idx3-ubyte \
-         -e ground_truth.txt \
-         -P 14 -M 10 -p 2 \
-         -o hc_output.txt -N 10 -t mnist -hypercube
-```
-
-#### IVFPQ (SIFT)
-```bash
-./search -d data/mnist/train-images.idx3-ubyte -q data/mnist/test-images.idx3-ubyte \
-         -c 100 -n 3 -o results/ivfflat_output.txt -N 10 -R 2000.0 \
-         -t mnist -r false -ivfpq
-```
-
-#### IVFFlat (BIO)
-```bash
-./search -d bio_base.bin -q bio_query.bin \
-         -c 100 -n 5 -o bio_output.txt \
-         -N 10 -t bio -ivfflat
-```
-
-#### Self-Search Mode (Neural-LSH Graph)
-```bash
-./search -d sift_base.fvecs -o knn_graph.txt \
-         -N 10 -t sift 
-```
-
-## Output Format
-
-The program produces an output file with the following structure:
-
-```
-algorithm_name
-Query: 0
-Nearest neighbor-1: <index>
-distanceApproximate: <distance>
-distanceTrue: <ground_truth_distance>
-Average AF: <value>
-Recall@N: <value>
-QPS: <queries_per_second>
-tApproximateAverage: <time>
-tTrueAverage: <ground_truth_time>
-
-...
-
-Overall Average AF: <value>
-Overall Recall@N: <value>
-Overall QPS: <value>
-Overall tApproximateAverage: <value>
-Overall tTrueAverage: <value>
-```
-
-### Evaluation Metrics
-
-- **AF (Approximation Factor):** Ratio of approximate distance to true distance
-- **Recall@N:** Percentage (%) of the N nearest neighbors found correctly
-- **QPS:** Queries per second (throughput)
-- **tApproximate:** Algorithm execution time (average)
-- **tTrue:** Brute force execution time for ground truth
 
 ---
 

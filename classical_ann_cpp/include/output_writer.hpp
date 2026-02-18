@@ -8,8 +8,7 @@
 
 using namespace std;
 
-
-// Full evaluation output (original format)
+// Full evaluation output 
 template <typename T>
 void write_output(
     const vector<T>& queries,

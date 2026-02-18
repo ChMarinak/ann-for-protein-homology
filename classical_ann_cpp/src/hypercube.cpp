@@ -1,4 +1,3 @@
-// hypercube.cpp
 #include "hypercube.hpp"
 #include <vector>
 #include <unordered_map>

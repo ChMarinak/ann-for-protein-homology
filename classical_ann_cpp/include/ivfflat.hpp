@@ -11,9 +11,6 @@ template <typename T>
 class IVFFlat {
 public:
     // Constructor
-    // kclusters: number of clusters (centroids)
-    // nprobe: number of clusters to check during search
-    // seed: random seed for reproducibility
     IVFFlat(int dimension, int kclusters = 50, int nprobe = 5, int seed = 1);
 
     // Train the index using k-means clustering
