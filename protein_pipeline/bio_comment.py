@@ -119,7 +119,9 @@ def bio_comment(
         if shared_go:
             return "Possible functional homology (shared GO terms)"
         if blast_identity > 0:
-            return "Embedding-based similarity χωρίς λειτουργική συνάφεια (πιθανό FP)"
+            return "Embedding-based similarity without functional support (potential FP)"
+        else:
+            return "Strong embedding-based similarity (no sequence evidence)"
 
     return "--"
 
